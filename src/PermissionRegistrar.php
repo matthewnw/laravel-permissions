@@ -2,7 +2,6 @@
 
 namespace Matthewnw\Permissions;
 
-
 use Illuminate\Support\Collection;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\Cache\Repository;
@@ -123,8 +122,12 @@ class PermissionRegistrar
     public function forgetCachedPermissions()
     {
         $this->cache->forget($this->cacheKey);
-        // FIXME: need to loop through all cached user permissions at this point also
-        // $this->getUserClass()::pluck('id');
+
+        // Loop through all user accounts and forget their cached permissions
+        // TODO: test the performance on this function and how often it runs
+        $this->getUserClass()::all()->each(function($user) {
+            $this->forgetCachedUserPermissions($user);
+        });
     }
 
     /**
