@@ -5,6 +5,8 @@ namespace Matthewnw\Permissions;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Schema;
+use Matthewnw\Permissions\Contracts\Permission as PermissionContract;
+use Matthewnw\Permissions\Contracts\Role as RoleContract;
 
 class PermissionsServiceProvider extends ServiceProvider
 {
@@ -27,11 +29,31 @@ class PermissionsServiceProvider extends ServiceProvider
         // Auto load the migrations if not published
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations/');
 
+        $this->registerBindings();
+
         // Check that the migrations have been run
-        if (Schema::hasTable(config('permissions.table_names.permissions')) && Schema::hasColumn(config('permissions.table_names.permissions'), 'identity')) {
+        if (
+            Schema::hasTable(config('permissions.table_names.permissions')) &&
+            Schema::hasColumn(config('permissions.table_names.permissions'), 'identity')
+        ) {
             // Load the permissions
             $permissionLoader->registerPermissions();
         }
+    }
+
+    /**
+     * Register class bindings for the service container.
+     * This allows us to type hint and inject the interfaces instead of a concrete
+     * class for the models if using the project uses custom ones
+     *
+     * @return void
+     */
+    protected function registerBindings()
+    {
+        $config = $this->app->config['permissions.models'];
+
+        $this->app->bind(PermissionContract::class, $config['permission']);
+        $this->app->bind(RoleContract::class, $config['role']);
     }
 
     /**
