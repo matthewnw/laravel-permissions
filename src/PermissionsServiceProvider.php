@@ -4,6 +4,7 @@ namespace Matthewnw\Permissions;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Schema;
 
 class PermissionsServiceProvider extends ServiceProvider
 {
@@ -16,19 +17,23 @@ class PermissionsServiceProvider extends ServiceProvider
      */
     public function boot(PermissionRegistrar $permissionLoader)
     {
+        // config
         $this->publishes([
             __DIR__. '/../config/permissions.php' => config_path('permissions.php'),
         ], 'config');
 
-        if (! class_exists('CreatePermissionTables')) {
-            $timestamp = date('Y_m_d_His', time());
-            $this->publishes([
-                __DIR__.'/../database/migrations/create_permission_tables.php.stub' => $this->app->databasePath()."/migrations/{$timestamp}_create_permission_tables.php",
-            ], 'migrations');
-        }
+        // migrations
+        $this->publishes([
+            __DIR__.'/../database/migrations/' => database_path('migrations'),
+        ], 'migrations');
+        // Auto load the migrations if not published
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations/');
 
-        // Load the permissions
-        $permissionLoader->registerPermissions();
+        // Check that the migrations have been run
+        if (Schema::hasTable(config('permissions.table_names.permissions')) && Schema::hasColumn(config('permissions.table_names.permissions'), 'identity')) {
+            // Load the permissions
+            $permissionLoader->registerPermissions();
+        }
     }
 
     /**

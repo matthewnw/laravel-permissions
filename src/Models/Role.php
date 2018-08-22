@@ -3,6 +3,7 @@
 namespace Matthewnw\Permissions\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Matthewnw\Permissions\Traits\HasPermissions;
 use Matthewnw\Permissions\Contracts\Role as RoleContract;
 use Matthewnw\Permissions\Exceptions\RoleDoesNotExist;
@@ -63,7 +64,7 @@ class Role extends Model implements RoleContract
     /**
      * A role may have various permissions.
      */
-    public function permissions()
+    public function permissions(): BelongsToMany
     {
         return $this->belongsToMany(
             config('permissions.models.permission'),
@@ -74,7 +75,7 @@ class Role extends Model implements RoleContract
     /**
      * A role may belong to various users.
      */
-    public function users()
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(
             config('permissions.models.user'),
@@ -91,7 +92,7 @@ class Role extends Model implements RoleContract
      *
      * @return \Matthewnw\Permissions\Contracts\Role
      */
-    public static function findByName(string $identity): RoleContract
+    public static function findByIdentity(string $identity): RoleContract
     {
         $role = static::where('identity', $identity)->first();
 

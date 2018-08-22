@@ -7,7 +7,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\Cache\Repository;
 use Illuminate\Contracts\Auth\Access\Authorizable;
-use Illuminate\Support\Facades\Schema;
 
 class PermissionRegistrar
 {
@@ -18,7 +17,7 @@ class PermissionRegistrar
     protected $cache;
 
     /** @var string */
-    protected $cacheKey = 'matthewnw.permissions.cache';
+    protected $cacheKey = 'matthewnw.permissions';
 
     /** @var string */
     protected $permissionClass;
@@ -41,46 +40,41 @@ class PermissionRegistrar
      */
     public function registerPermissions()
     {
-        if (Schema::hasColumn('permissions', 'identity')) {
-
-            // Load the static permissions from the database
-            $this->getPermissions()->each(function (string $identity) {
-                $this->gate->define($identity, function (Authorizable $user) use ($identity) {
-                    $userPermissions = $this->cache->remember($this->getUserCacheKey($user), config('permissions.cache_expiration_time'), function () {
-                        // closure for checking based on user id
-                        $userClosure = function ($query) use ($user) {
-                            $query->where('users.id', '=', $user->id);
-                        };
-                        // Get all permissions for a user based on direct relation of through roles
-                        $userPermissions = $this->getPermissionClass->query()
-                            ->whereHas('roles', function ($query) use ($userClosure) {
-                                $query->where('active', '=', 1)
-                                    ->whereHas('users', $userClosure);
-                            })
-                            ->orWhereHas('users', $userClosure)
-                            ->groupBy('permissions.id')
-                            ->where('active', '=', 1)
-                            ->pluck('identity');
-                        return $userPermissions;
-                    });
-
-                    // check wildcard permissions
-                    if ($userPermissions) {
-                        $altPermissions = $this->getWildcardPermissions($identity);
-
-                        return null !== $userPermissions->first(function (string $identity) use ($altPermissions) {
-                            return in_array($identity, $altPermissions, true);
-                        });
-                    }
-
-                    return false;
+        // Load the static permissions from the database
+        $this->getPermissions()->each(function (string $identity) {
+            $this->gate->define($identity, function (Authorizable $user) use ($identity) {
+                $userPermissions = $this->cache->remember($this->getUserCacheKey($user), config('permissions.cache_expiration_time'), function () {
+                    // closure for checking based on user id
+                    $userClosure = function ($query) use ($user) {
+                        $query->where('users.id', '=', $user->id);
+                    };
+                    // Get all permissions for a user based on direct relation of through roles
+                    $userPermissions = $this->getPermissionClass->query()
+                        ->whereHas('roles', function ($query) use ($userClosure) {
+                            $query->where('active', '=', 1)
+                                ->whereHas('users', $userClosure);
+                        })
+                        ->orWhereHas('users', $userClosure)
+                        ->groupBy('permissions.id')
+                        ->where('active', '=', 1)
+                        ->pluck('identity');
+                    return $userPermissions;
                 });
+
+                // check wildcard permissions
+                if ($userPermissions) {
+                    $altPermissions = $this->getWildcardPermissions($identity);
+
+                    return null !== $userPermissions->first(function (string $identity) use ($altPermissions) {
+                        return in_array($identity, $altPermissions, true);
+                    });
+                }
+
+                return false;
             });
+        });
 
-            return true;
-
-        }
-        return false;
+        return true;
     }
 
     /**
@@ -114,7 +108,7 @@ class PermissionRegistrar
      */
     protected function getUserCacheKey(Authorizable $user): string
     {
-        return 'user.' . $user->id . '.permissions';
+        return $this->cacheKey . '.user.' . $user->id;
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace Matthewnw\Permissions\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Matthewnw\Permissions\Contracts\Permission as PermissionContract;
 use Matthewnw\Permissions\Exceptions\PermissionDoesNotExist;
 
@@ -25,7 +26,7 @@ class Permission extends Model implements PermissionContract
     /**
      * A permission may belong to various roles.
      */
-    public function roles()
+    public function roles(): BelongsToMany
     {
         return $this->belongsToMany(
             config('permissions.models.role'),
@@ -36,7 +37,7 @@ class Permission extends Model implements PermissionContract
     /**
      * A permission belongs to some users of the model associated with its guard.
      */
-    public function users()
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(
             config('permissions.models.user'),
@@ -53,7 +54,7 @@ class Permission extends Model implements PermissionContract
      *
      * @return \Matthewnw\Permissions\Contracts\Permission
      */
-    public static function findByIdeneity(string $identity): PermissionContract
+    public static function findByIdentity(string $identity): PermissionContract
     {
         $permission = static::getPermissions()->filter(function ($permission) use ($identity) {
             return $permission->identity === $identity;

@@ -25,9 +25,9 @@ return [
         /*
          * When using the "HasRoles" trait from this package, we need to know which
          * Eloquent model should be used to retrieve your authorized Users. Of course, it
-         * is often just the "App\Models\User" model but you may use whatever you like.
+         * is often just the "App\User" model but you may use whatever you like.
          */
-        'user' => App\Models\User::class,
+        'user' => App\User::class,
     ],
 
     'table_names' => [
