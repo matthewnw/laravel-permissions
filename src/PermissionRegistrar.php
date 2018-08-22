@@ -25,12 +25,16 @@ class PermissionRegistrar
     /** @var string */
     protected $roleClass;
 
+    /** @var string */
+    protected $userClass;
+
     public function __construct(Gate $gate, Repository $cache)
     {
         $this->gate = $gate;
         $this->cache = $cache;
         $this->permissionClass = config('permissions.models.permission');
         $this->roleClass = config('permissions.models.role');
+        $this->userClass = config('permissions.models.user');
     }
 
     /**
@@ -119,6 +123,8 @@ class PermissionRegistrar
     public function forgetCachedPermissions()
     {
         $this->cache->forget($this->cacheKey);
+        // FIXME: need to loop through all cached user permissions at this point also
+        // $this->getUserClass()::pluck('id');
     }
 
     /**
@@ -164,5 +170,15 @@ class PermissionRegistrar
     public function getRoleClass()
     {
         return app($this->roleClass);
+    }
+
+    /**
+     * Get an instance of the User class from the service container
+     *
+     * @return void
+     */
+    public function getUserClass()
+    {
+        return app($this->userClass);
     }
 }
