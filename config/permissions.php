@@ -62,10 +62,18 @@ return [
          */
         'user_permissions' => 'user_permissions',
     ],
+
     /*
      * By default all permissions will be cached for 24 hours unless a permission or
      * role is updated. Then the cache will be flushed immediately.
      */
-
     'cache_expiration_time' => 60 * 24,
+
+    /*
+     * If using dot notation for you permissions, i.e. blog.post.update you can
+     * also include wildcard permission checks so that a gate check for
+     * 'blog.post.update' will also allow user permissions of
+     * 'blog.post.*' and 'blog.*'.
+     */
+    'use_wildcard_permissions' => true,
 ];

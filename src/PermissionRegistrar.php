@@ -46,6 +46,7 @@ class PermissionRegistrar
         // Load the static permissions from the database
         $this->getPermissions()->each(function (string $identity) {
             $this->gate->define($identity, function (Authorizable $user) use ($identity) {
+                // Get the user permissions either from the cache or load from the database
                 $userPermissions = $this->cache->remember($this->getUserCacheKey($user), config('permissions.cache_expiration_time'), function () {
                     // closure for checking based on user id
                     $userClosure = function ($query) use ($user) {
@@ -53,31 +54,34 @@ class PermissionRegistrar
                     };
                     // Get all permissions for a user based on direct relation of through roles
                     $userPermissions = $this->getPermissionClass->query()
+                        ->active()
                         ->whereHas('roles', function ($query) use ($userClosure) {
-                            $query->where('active', '=', 1)
-                                ->whereHas('users', $userClosure);
+                            $query->active()->whereHas('users', $userClosure);
                         })
                         ->orWhereHas('users', $userClosure)
                         ->groupBy('permissions.id')
-                        ->where('active', '=', 1)
                         ->pluck('identity');
                     return $userPermissions;
                 });
 
                 // check wildcard permissions
                 if ($userPermissions) {
-                    $altPermissions = $this->getWildcardPermissions($identity);
-
-                    return null !== $userPermissions->first(function (string $identity) use ($altPermissions) {
-                        return in_array($identity, $altPermissions, true);
-                    });
+                    // Check if using wildcard permissions
+                    if (config('permissions.use_wildcard_permissions')){
+                        $altPermissions = $this->getWildcardPermissions($identity);
+                        // Check if the identity or variations are in the user permissions
+                        return null !== $userPermissions->first(function (string $identity) use ($altPermissions) {
+                            return in_array($identity, $altPermissions, true);
+                        });
+                    }else{
+                        // Using strict permission identity checks only
+                        return null !== $userPermissions->firstWhere('identity', $identity);
+                    }
                 }
 
                 return false;
             });
         });
-
-        return true;
     }
 
     /**
@@ -124,7 +128,6 @@ class PermissionRegistrar
         $this->cache->forget($this->cacheKey);
 
         // Loop through all user accounts and forget their cached permissions
-        // TODO: test the performance on this function and how often it runs
         $this->getUserClass()::all()->each(function($user) {
             $this->forgetCachedUserPermissions($user);
         });

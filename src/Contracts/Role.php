@@ -45,4 +45,12 @@ interface Role
      * @return Role
      */
     public static function findById(int $id): self;
+
+    /**
+     * Scope to only retrieve active roles
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeActive($query): Builder;
 }

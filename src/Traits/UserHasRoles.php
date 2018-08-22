@@ -54,7 +54,7 @@ trait UserHasRoles
                     return false;
                 }
                 // get the stored role instance for each passed variable
-                return app(RoleRepository::class)->getStoredRole($role);
+                return $this->getRoleClass()::findByIdentity($role);
             })
             ->filter(function ($role) {
                 // return only a collection of Role instances

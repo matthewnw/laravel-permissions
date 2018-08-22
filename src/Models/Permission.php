@@ -3,8 +3,9 @@
 namespace Matthewnw\Permissions\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Matthewnw\Permissions\Contracts\Permission as PermissionContract;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Builder;
 use Matthewnw\Permissions\Exceptions\PermissionDoesNotExist;
 use Matthewnw\Permissions\PermissionRegistrar;
 
@@ -44,6 +45,17 @@ class Permission extends Model implements PermissionContract
             config('permissions.models.user'),
             config('permissions.table_names.user_permissions'),
             'permission_id', 'user_id');
+    }
+
+    /**
+     * Scope to only retrieve active roles
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeActive($query): Builder
+    {
+        return $query->where('active', '=', 1);
     }
 
     /**

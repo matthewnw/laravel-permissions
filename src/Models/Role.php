@@ -3,9 +3,10 @@
 namespace Matthewnw\Permissions\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Matthewnw\Permissions\Traits\HasPermissions;
 use Matthewnw\Permissions\Contracts\Role as RoleContract;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Builder;
+use Matthewnw\Permissions\Traits\HasPermissions;
 use Matthewnw\Permissions\Exceptions\RoleDoesNotExist;
 
 class Role extends Model implements RoleContract
@@ -81,6 +82,17 @@ class Role extends Model implements RoleContract
             config('permissions.models.user'),
             config('permissions.table_names.user_roles'),
             'role_id', 'user_id');
+    }
+
+    /**
+     * Scope to only retrieve active roles
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeActive($query): Builder
+    {
+        return $query->where('active', '=', 1);
     }
 
     /**

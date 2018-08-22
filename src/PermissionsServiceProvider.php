@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\Schema;
 
 class PermissionsServiceProvider extends ServiceProvider
 {
-    protected $permissions;
-
     /**
      * Bootstrap the application services.
      *

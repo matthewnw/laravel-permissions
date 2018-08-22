@@ -29,7 +29,7 @@ trait HasPermissions
                     return false;
                 }
                 // get the stored permission instance for each passed variable
-                return app(PermissionRepository::class)->getStoredPermission($permission);
+                return $this->getPermissionClass()::findByIdentity($permission);
             })
             ->filter(function ($permission) {
                 // return only a collection of Permission instances
@@ -37,7 +37,8 @@ trait HasPermissions
             })
             ->map->id // higher order message to just return the id from each permission
             ->all();
-        $this->permissions()->sync($permissions, false);
+
+        $this->permissions()->sync($permissions, false); // second false argument specifies to leave current relations in-tact
 
         // forget all cached permissions
         $this->forgetCachedPermissions();

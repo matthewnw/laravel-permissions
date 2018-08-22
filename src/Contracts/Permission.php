@@ -2,6 +2,7 @@
 namespace Matthewnw\Permissions\Contracts;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Builder;
 
 interface Permission
 {
@@ -40,4 +41,12 @@ interface Permission
      * @return Permission
      */
     public static function findById(int $id): self;
+
+    /**
+     * Scope to only retrieve active permissions
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeActive($query): Builder;
 }
