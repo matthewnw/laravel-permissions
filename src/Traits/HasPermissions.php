@@ -40,7 +40,7 @@ trait HasPermissions
 
         $this->permissions()->sync($permissions, false); // second false argument specifies to leave current relations in-tact
 
-        // forget all cached permissions
+        // forget all cached permissions including user cached permissions
         $this->forgetCachedPermissions();
 
         return $this;
@@ -62,7 +62,7 @@ trait HasPermissions
     /**
      * alias to get the permission class from the service container via the PermissionRegistrar
      *
-     * @return void
+     * @return \Matthewnw\Permissions\Contracts\Permission
      */
     public function getPermissionClass()
     {
@@ -73,7 +73,7 @@ trait HasPermissions
     }
 
     /**
-     * Forget the cached permissions.
+     * Alias to Forget all cached permissions.
      */
     public function forgetCachedPermissions()
     {

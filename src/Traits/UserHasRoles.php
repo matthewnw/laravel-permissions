@@ -63,7 +63,8 @@ trait UserHasRoles
             ->map->id // higher order message to just return the id from each role
             ->all();
         $this->roles()->sync($roles, false);
-        // forget all user cached permissions
+
+        // forget only the user cached permissions
         $this->forgetCachedUserPermissions($this);
 
         return $this;
@@ -111,7 +112,7 @@ trait UserHasRoles
     /**
      * alias to get the role class from the service container via the PermissionRegistrar
      *
-     * @return void
+     * @return \Matthewnw\Permissions\Contracts\Role
      */
     public function getRoleClass()
     {
@@ -122,7 +123,7 @@ trait UserHasRoles
     }
 
     /**
-     * Forget the cached permissions for the specific user.
+     * alias to forget the cached permissions for the specific user.
      */
     public function forgetCachedUserPermissions()
     {
