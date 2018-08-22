@@ -1,0 +1,39 @@
+{
+    "name": "matthewnw/laravel-permissions",
+    "description": "Permission handling for users in Laravel 5.5 and up",
+    "keywords": [
+        "codelaunch",
+        "laravel",
+        "permissions",
+        "acl",
+        "security"
+    ],
+    "homepage": "https://gitlab.codelaunch.uk/packages/laravel-permissions",
+    "license": "MIT",
+    "require": {
+        "php": ">=7.0",
+        "illuminate/auth": "~5.5.0|~5.6.0",
+        "illuminate/support": "~5.5.0|~5.6.0",
+        "illuminate/contracts": "~5.5.0|~5.6.0",
+        "illuminate/database": "~5.5.0|~5.6.0"
+    },
+    "authors": [
+        {
+            "name": "Matthew Williams",
+            "email": "matthew@codelaunch.uk"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Matthewnw\\Permissions\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Matthewnw\\Permissions\\PermissionsServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev"
+}
