@@ -6,9 +6,9 @@ use InvalidArgumentException;
 
 class PermissionDoesNotExist extends InvalidArgumentException
 {
-    public static function create(string $permissionName, string $guardName = '')
+    public static function withIdentity(string $permissionIdentity)
     {
-        return new static("There is no permission named `{$permissionName}`.");
+        return new static("There is no permission identified by `{$permissionIdentity}`.");
     }
 
     public static function withId(int $permissionId)

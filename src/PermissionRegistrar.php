@@ -133,7 +133,7 @@ class PermissionRegistrar
      * @param Authorizable $user
      * @return void
      */
-    public function forgetUserCachedPermissions(Authorizable $user)
+    public function forgetCachedUserPermissions(Authorizable $user)
     {
         $this->cache->forget($this->getUserCacheKey($user));
     }

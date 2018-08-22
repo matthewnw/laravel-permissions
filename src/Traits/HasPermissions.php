@@ -38,8 +38,9 @@ trait HasPermissions
             ->map->id // higher order message to just return the id from each permission
             ->all();
         $this->permissions()->sync($permissions, false);
+
         // forget all cached permissions
-        app(PermissionRegistrar::class)->forgetCachedPermissions();
+        $this->forgetCachedPermissions();
 
         return $this;
     }
@@ -68,5 +69,13 @@ trait HasPermissions
             $this->permissionClass = app(PermissionRegistrar::class)->getPermissionClass();
         }
         return $this->permissionClass;
+    }
+
+    /**
+     * Forget the cached permissions.
+     */
+    public function forgetCachedPermissions()
+    {
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
     }
 }

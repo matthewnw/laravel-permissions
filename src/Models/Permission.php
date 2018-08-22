@@ -4,6 +4,7 @@ namespace Matthewnw\Permissions\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Matthewnw\Permissions\Contracts\Permission as PermissionContract;
+use Matthewnw\Permissions\Exceptions\PermissionDoesNotExist;
 
 class Permission extends Model implements PermissionContract
 {
@@ -21,6 +22,9 @@ class Permission extends Model implements PermissionContract
         $this->setTable(config('permission.table_names.permissions'));
     }
 
+    /**
+     * A permission may belong to various roles.
+     */
     public function roles()
     {
         return $this->belongsToMany(
@@ -41,28 +45,28 @@ class Permission extends Model implements PermissionContract
     }
 
     /**
-     * Find a permission by its name (and optionally guardName).
+     * Find a permission by its identity.
      *
-     * @param string $name
-     * @param string|null $guardName
+     * @param string $identity
      *
      * @throws \Matthewnw\Permissions\Exceptions\PermissionDoesNotExist
      *
      * @return \Matthewnw\Permissions\Contracts\Permission
      */
-    public static function findByName(string $name): PermissionContract
+    public static function findByIdeneity(string $identity): PermissionContract
     {
-        $permission = static::getPermissions()->filter(function ($permission) use ($name) {
-            return $permission->name === $name;
+        $permission = static::getPermissions()->filter(function ($permission) use ($identity) {
+            return $permission->identity === $identity;
         })->first();
+
         if (! $permission) {
-            throw PermissionDoesNotExist::create($name, $guardName);
+            throw PermissionDoesNotExist::withIdentity($identity);
         }
         return $permission;
     }
 
     /**
-     * Find a permission by its id (and optionally guardName).
+     * Find a permission by its id .
      *
      * @param int $id
      * @param string|null $guardName
@@ -76,8 +80,9 @@ class Permission extends Model implements PermissionContract
         $permission = static::getPermissions()->filter(function ($permission) use ($id) {
             return $permission->id === $id;
         })->first();
+
         if (! $permission) {
-            throw PermissionDoesNotExist::withId($id, $guardName);
+            throw PermissionDoesNotExist::withId($id);
         }
         return $permission;
     }
