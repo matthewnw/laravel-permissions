@@ -76,4 +76,5 @@ return [
      * 'blog.post.*' and 'blog.*'.
      */
     'use_wildcard_permissions' => true,
+
 ];

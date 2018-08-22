@@ -21,6 +21,14 @@ interface Permission
     public function users(): BelongsToMany;
 
     /**
+     * Scope to only retrieve active permissions
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeActive($query): Builder;
+
+    /**
      * Find a permission by its identity.
      *
      * @param string $identity
@@ -41,12 +49,4 @@ interface Permission
      * @return Permission
      */
     public static function findById(int $id): self;
-
-    /**
-     * Scope to only retrieve active permissions
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeActive($query): Builder;
 }

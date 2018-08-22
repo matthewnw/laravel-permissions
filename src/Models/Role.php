@@ -20,11 +20,7 @@ class Role extends Model implements RoleContract
     protected $casts = [
         'active' => 'bool',
         'level' => 'int',
-        'default' => 'boolean',
-    ];
-
-    protected $appends = [
-        'permissions_list',
+        'default' => 'bool',
     ];
 
     public function __construct(array $attributes = [])
@@ -51,7 +47,7 @@ class Role extends Model implements RoleContract
      *
      * @return bool
      */
-    public function isDefault()
+    public function isDefault() : bool
     {
         return $this->default;
     }
