@@ -12,10 +12,8 @@ composer_dev:
     - composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
   artifacts:
     expire_in: 1 week
-    # Define what to output from the job.
     paths:
       - vendor/
-      - .env
   cache:
     key: ${CI_COMMIT_REF_SLUG}-composer_dev
     paths:
