@@ -2,6 +2,7 @@
 namespace Matthewnw\Permissions\Contracts;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Builder;
 
 interface Role
 {

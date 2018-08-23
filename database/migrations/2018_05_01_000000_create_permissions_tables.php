@@ -19,7 +19,7 @@ class CreatePermissionsTables extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('identity')->unique();
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->boolean('active')->default(0);
             $table->timestamps();
         });
@@ -28,7 +28,7 @@ class CreatePermissionsTables extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('identity')->unique();
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->boolean('default')->default(0);
             $table->boolean('active')->default(0);
             $table->integer('level')->default(99);
