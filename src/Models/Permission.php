@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Matthewnw\Permissions\Contracts\Permission as PermissionContract;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Matthewnw\Permissions\Exceptions\PermissionDoesNotExist;
 use Matthewnw\Permissions\PermissionRegistrar;
 
