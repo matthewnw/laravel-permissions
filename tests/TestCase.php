@@ -8,6 +8,7 @@ use Matthewnw\Permissions\PermissionsServiceProvider;
 use Matthewnw\Permissions\PermissionsRegistrar;
 use Matthewnw\Permissions\Contracts\Permission;
 use Matthewnw\Permissions\Contracts\Role;
+use Illuminate\Support\Facades\DB;
 
 abstract class TestCase extends Orchestra
 {
@@ -30,13 +31,19 @@ abstract class TestCase extends Orchestra
     {
         parent::setUp();
 
+        $this->loadLaravelMigrations();
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations/');
+
         $this->setUpDatabase($this->app);
 
+        // Force the registration of the policies as the provider was loaded before the migrations
+        $this->reloadPermissions();
+
         $this->testUser = User::first();
-        $this->testUserRole = app(Role::class)->find(1);
-        $this->testUserPermission = app(Permission::class)->find(1);
-        $this->testAdminRole = app(Role::class)->find(3);
-        $this->testAdminPermission = app(Permission::class)->find(4);
+        $this->testAdminRole = app(Role::class)->find(1);
+        $this->testAdminPermission = app(Permission::class)->find(1);
+        $this->testUserRole = app(Role::class)->find(2);
+        $this->testUserPermission = app(Permission::class)->find(2);
     }
 
     /**
@@ -76,32 +83,23 @@ abstract class TestCase extends Orchestra
      */
     protected function setUpDatabase($app)
     {
-        $app['config']->set('auth.providers.users.model', User::class);
+        // Turn on foreign keys for SQlite
+        DB::statement(DB::raw('PRAGMA foreign_keys = ON;'));
 
-        $app['db']->connection()->getSchemaBuilder()->create('users', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('email');
-            $table->softDeletes();
-        });
+        User::create(['name' => 'Test User', 'email' => 'test@user.com', 'password' => 'secret']);
 
-        foreach (glob(__DIR__.'/../database/migrations/*.php') as $filename) {
-            include_once $filename;
-        }
+        $app[Role::class]->create(['identity' => 'testadminrole', 'name' => 'Test Admin Role', 'active' => true]);
+        $app[Role::class]->create(['identity' => 'testrole', 'name' => 'Test Role', 'active' => true]);
+        $app[Role::class]->create(['identity' => 'testrole2', 'name' => 'Test Role 2', 'active' => true]);
+        $app[Role::class]->create(['identity' => 'inactiverole', 'name' => 'Inactive Role', 'active' => false]);
 
-        (new \CreatePermissionsTables())->up();
-
-        User::create(['email' => 'test@user.com']);
-
-        $app[Role::class]->create(['identity' => 'testRole', 'name' => 'Test Role']);
-        $app[Role::class]->create(['identity' => 'testRole2', 'name' => 'Test Role 2']);
-        $app[Role::class]->create(['identity' => 'testAdminRole', 'name' => 'Test Admin Role']);
-
-        $app[Permission::class]->create(['identity' => 'admin.permission', 'name' => 'Admin Permission']);
-        $app[Permission::class]->create(['identity' => 'articles.create', 'name' => 'Create Articles']);
-        $app[Permission::class]->create(['identity' => 'articles.edit', 'name' => 'Edit Articles']);
-        $app[Permission::class]->create(['identity' => 'articles.*', 'name' => 'Wildcard Articles']);
-        $app[Permission::class]->create(['identity' => 'news.edit', 'name' => 'Edit News']);
-        $app[Permission::class]->create(['identity' => 'blog.edit', 'name' => 'Edit Blog']);
+        $app[Permission::class]->create(['identity' => 'admin.permission', 'name' => 'Admin Permission', 'active' => true]);
+        $app[Permission::class]->create(['identity' => 'articles.create', 'name' => 'Create Articles', 'active' => true]);
+        $app[Permission::class]->create(['identity' => 'articles.edit', 'name' => 'Edit Articles', 'active' => true]);
+        $app[Permission::class]->create(['identity' => 'articles.*', 'name' => 'Wildcard Articles', 'active' => true]);
+        $app[Permission::class]->create(['identity' => 'news.edit', 'name' => 'Edit News', 'active' => true]);
+        $app[Permission::class]->create(['identity' => 'blog.edit', 'name' => 'Edit Blog', 'active' => true]);
+        $app[Permission::class]->create(['identity' => 'inactive.permission', 'name' => 'Inactive Permission', 'active' => false]);
     }
 
     /**
@@ -110,6 +108,7 @@ abstract class TestCase extends Orchestra
     protected function reloadPermissions()
     {
         app(PermissionsRegistrar::class)->forgetCachedPermissions();
+        app(PermissionsRegistrar::class)->registerPermissions();
     }
 
     /**
@@ -126,5 +125,13 @@ abstract class TestCase extends Orchestra
     public function refreshTestUserPermission()
     {
         $this->testUserPermission = $this->testUserPermission->fresh();
+    }
+
+    /**
+     * Refresh the testUserRole.
+     */
+    public function refreshTestUserRole()
+    {
+        $this->testUserRole = $this->testUserRole->fresh();
     }
 }

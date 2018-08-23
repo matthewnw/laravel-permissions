@@ -30,8 +30,7 @@ class PermissionsServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations/');
 
         $this->registerBindings();
-
-        // Check that the migrations have been run
+        // Check that the migrations have been run before loading the permissions
         if (
             Schema::hasTable(config('permissions.table_names.permissions')) &&
             Schema::hasColumn(config('permissions.table_names.permissions'), 'identity')

@@ -52,7 +52,7 @@ trait UserHasRoles
                     return false;
                 }
                 // get the stored role instance for each passed variable
-                return $this->getRoleClass()::findByIdentity($role);
+                return $this->getStoredRole($role);
             })
             ->filter(function ($role) {
                 // return only a collection of Role instances
@@ -108,6 +108,16 @@ trait UserHasRoles
     }
 
     /**
+     * Revoke the given role from the model.
+     *
+     * @param string|\Spatie\Permission\Contracts\Role $role
+     */
+    public function removeRole($role)
+    {
+        $this->roles()->detach($this->getStoredRole($role));
+    }
+
+    /**
      * alias to get the role class from the service container via the PermissionsRegistrar
      *
      * @return \Matthewnw\Permissions\Contracts\Role
@@ -118,6 +128,24 @@ trait UserHasRoles
             $this->roleClass = app(PermissionsRegistrar::class)->getRoleClass();
         }
         return $this->roleClass;
+    }
+
+    /**
+     * Get a stored role by either id or identity
+     *
+     * @param int|string $role
+     * @return Role
+     */
+    protected function getStoredRole($role): Role
+    {
+        $roleClass = $this->getRoleClass();
+        if (is_numeric($role)) {
+            return $roleClass->findById($role);
+        }
+        if (is_string($role)) {
+            return $roleClass->findByIdentity($role);
+        }
+        return $role;
     }
 
     /**

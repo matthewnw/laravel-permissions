@@ -44,27 +44,13 @@ class PermissionsRegistrar
     public function registerPermissions()
     {
         // Load the static permissions from the database
-        $this->getPermissions()->each(function (string $identity) {
+        $this->getPermissions()->each(function ($permission) {
+            $identity = $permission->identity;
+            // Define the gate for each saved permission
             $this->gate->define($identity, function (Authorizable $user) use ($identity) {
                 // Get the user permissions either from the cache or load from the database
-                $userPermissions = $this->cache->remember($this->getUserCacheKey($user), config('permissions.cache_expiration_time'), function () {
-                    // closure for checking based on user id
-                    $userClosure = function ($query) use ($user) {
-                        $query->where('users.id', '=', $user->id);
-                    };
-                    // Get all permissions for a user based on direct relation of through roles
-                    $userPermissions = $this->getPermissionClass->query()
-                        ->active()
-                        ->whereHas('roles', function ($query) use ($userClosure) {
-                            $query->active()->whereHas('users', $userClosure);
-                        })
-                        ->orWhereHas('users', $userClosure)
-                        ->groupBy('permissions.id')
-                        ->pluck('identity');
-                    return $userPermissions;
-                });
+                $userPermissions = $this->getUserPermissions($user);
 
-                // check wildcard permissions
                 if ($userPermissions) {
                     // Check if using wildcard permissions
                     if (config('permissions.use_wildcard_permissions')){
@@ -82,6 +68,51 @@ class PermissionsRegistrar
                 return false;
             });
         });
+    }
+
+    /**
+     * Retrieve the permissions collection from the database or cache if available
+     *
+     * @return Collection
+     */
+    public function getPermissions(): Collection
+    {
+        $permissionClass = $this->getPermissionClass();
+
+        return $this->cache->remember($this->cacheKey, config('permission.cache_expiration_time'), function () use ($permissionClass) {
+            return $permissionClass->get();
+        });
+    }
+
+    /**
+     * Retrieve the user specific permissions collection from the database or
+     * cache if available
+     *
+     * @param Authorizable $user
+     * @return Collection
+     */
+    public function getUserPermissions(Authorizable $user): Collection
+    {
+        return $this->cache->remember(
+            $this->getUserCacheKey($user),
+            config('permissions.cache_expiration_time'),
+            function () use($user) {
+                // closure for checking based on user id
+                $userClosure = function ($query) use ($user) {
+                    $query->where('users.id', '=', $user->id);
+                };
+                // Get all permissions for a user based on direct relation of through roles
+                $userPermissions = $this->getPermissionClass()->query()
+                    ->active()
+                    ->whereHas('roles', function ($query) use ($userClosure) {
+                        $query->active()->whereHas('users', $userClosure);
+                    })
+                    ->orWhereHas('users', $userClosure)
+                    ->groupBy('permissions.id')
+                    ->pluck('identity');
+                return $userPermissions;
+            }
+        );
     }
 
     /**
@@ -142,20 +173,6 @@ class PermissionsRegistrar
     public function forgetCachedUserPermissions(Authorizable $user)
     {
         $this->cache->forget($this->getUserCacheKey($user));
-    }
-
-    /**
-     * Retrieve the permissions collection from the database or cache if available
-     *
-     * @return Collection
-     */
-    public function getPermissions(): Collection
-    {
-        $permissionClass = $this->getPermissionClass();
-
-        return $this->cache->remember($this->cacheKey, config('permission.cache_expiration_time'), function () use ($permissionClass) {
-            return $permissionClass->get();
-        });
     }
 
     /**

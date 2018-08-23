@@ -29,7 +29,7 @@ trait HasPermissions
                     return false;
                 }
                 // get the stored permission instance for each passed variable
-                return $this->getPermissionClass()::findByIdentity($permission);
+                return $this->getStoredPermission($permission);
             })
             ->filter(function ($permission) {
                 // return only a collection of Permission instances
@@ -70,6 +70,24 @@ trait HasPermissions
             $this->permissionClass = app(PermissionsRegistrar::class)->getPermissionClass();
         }
         return $this->permissionClass;
+    }
+
+    /**
+     * Get a stored permission by either id or identity
+     *
+     * @param int|string $permission
+     * @return Permission
+     */
+    protected function getStoredPermission($permission): Permission
+    {
+        $permissionClass = $this->getPermissionClass();
+        if (is_numeric($permission)) {
+            return $permissionClass->findById($permission);
+        }
+        if (is_string($permission)) {
+            return $permissionClass->findByIdentity($permission);
+        }
+        return $permission;
     }
 
     /**
