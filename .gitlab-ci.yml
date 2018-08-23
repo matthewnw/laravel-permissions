@@ -6,7 +6,7 @@ image: edbizarro/gitlab-ci-pipeline-php:7.1-alpine
 
 #### Build
 # We need to build development dependencies as they are needed to testing
-composer_dev:
+composer:
   stage: build
   script:
     - composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
@@ -15,7 +15,7 @@ composer_dev:
     paths:
       - vendor/
   cache:
-    key: ${CI_COMMIT_REF_SLUG}-composer_dev
+    key: ${CI_COMMIT_REF_SLUG}-composer
     paths:
       - vendor/
       - ~/.composer/cache/files
@@ -27,7 +27,7 @@ composer_dev:
 phpunit:
   stage: test
   dependencies:
-    - composer_dev
+    - composer
   script:
     - ./vendor/phpunit/phpunit/phpunit -v --coverage-text --stderr
   only:
@@ -37,7 +37,7 @@ phpunit:
 codestyle:
   stage: test
   dependencies:
-    - composer_dev
+    - composer
   script:
     - ./vendor/bin/phpcs --colors
   only:
