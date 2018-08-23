@@ -32,11 +32,6 @@ phpunit:
     - composer_dev
   script:
     - ./vendor/phpunit/phpunit/phpunit -v --coverage-text --stderr
-  artifacts:
-    paths:
-      - ./storage/logs # for debugging
-    expire_in: 1 days
-    when: always
   only:
     - develop
     - master
