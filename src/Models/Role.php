@@ -77,7 +77,7 @@ class Role extends Model implements RoleContract
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(
-            config('permissions.models.user'),
+            config('auth.providers.users.model'),
             config('permissions.table_names.user_roles'),
             'role_id', 'user_id');
     }

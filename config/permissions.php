@@ -21,13 +21,6 @@ return [
          * `Matthewnw\Permissions\Contracts\Role` contract.
          */
         'role' => Matthewnw\Permissions\Models\Role::class,
-
-        /*
-         * When using the "HasRoles" trait from this package, we need to know which
-         * Eloquent model should be used to retrieve your authorized Users. Of course, it
-         * is often just the "App\User" model but you may use whatever you like.
-         */
-        'user' => App\User::class,
     ],
 
     'table_names' => [

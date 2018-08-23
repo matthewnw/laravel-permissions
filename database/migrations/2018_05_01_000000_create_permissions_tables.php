@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Matthewnw\Permissions\PermissionsRegistrar;
 
 class CreatePermissionsTables extends Migration
 {
@@ -62,7 +63,7 @@ class CreatePermissionsTables extends Migration
             $table->unique(['user_id', 'permission_id']);
         });
 
-        app('cache')->forget('matthewnw.permissions.cache');
+        app(PermissionsRegistrar::class)->forgetCachedPermissions();
     }
 
     /**

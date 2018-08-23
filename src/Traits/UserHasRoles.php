@@ -2,8 +2,6 @@
 
 namespace Matthewnw\Permissions\Traits;
 
-// use App\Repositories\Auth\RoleRepository;
-
 use Matthewnw\Permissions\PermissionsRegistrar;
 use Matthewnw\Permissions\Contracts\Role;
 

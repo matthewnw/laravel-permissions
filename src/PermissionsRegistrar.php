@@ -33,7 +33,7 @@ class PermissionsRegistrar
         $this->cache = $cache;
         $this->permissionClass = config('permissions.models.permission');
         $this->roleClass = config('permissions.models.role');
-        $this->userClass = config('permissions.models.user');
+        $this->userClass = config('auth.providers.users.model');
     }
 
     /**

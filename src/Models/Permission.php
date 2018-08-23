@@ -46,7 +46,7 @@ class Permission extends Model implements PermissionContract
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(
-            config('permissions.models.user'),
+            config('auth.providers.users.model'),
             config('permissions.table_names.user_permissions'),
             'permission_id', 'user_id');
     }
