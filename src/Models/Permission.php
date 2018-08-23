@@ -9,9 +9,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Matthewnw\Permissions\Exceptions\PermissionDoesNotExist;
 use Matthewnw\Permissions\PermissionsRegistrar;
+use Matthewnw\Permissions\Traits\RefreshesPermissionsCache;
 
 class Permission extends Model implements PermissionContract
 {
+    use RefreshesPermissionsCache;
+
     protected $fillable = [
         'name', 'identity', 'group', 'description', 'active',
     ];

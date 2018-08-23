@@ -8,10 +8,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Builder;
 use Matthewnw\Permissions\Traits\HasPermissions;
 use Matthewnw\Permissions\Exceptions\RoleDoesNotExist;
+use Matthewnw\Permissions\Traits\RefreshesPermissionsCache;
 
 class Role extends Model implements RoleContract
 {
-    use HasPermissions;
+    use HasPermissions,
+        RefreshesPermissionsCache;
 
     protected $fillable = [
         'name', 'identity', 'description', 'active', 'level', 'default',
