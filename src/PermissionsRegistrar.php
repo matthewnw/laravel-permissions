@@ -7,7 +7,7 @@ use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\Cache\Repository;
 use Illuminate\Contracts\Auth\Access\Authorizable;
 
-class PermissionRegistrar
+class PermissionsRegistrar
 {
     /** @var \Illuminate\Contracts\Auth\Access\Gate */
     protected $gate;

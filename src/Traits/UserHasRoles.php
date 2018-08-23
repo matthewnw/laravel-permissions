@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models\Traits;
+namespace Matthewnw\Permissions\Traits;
 
 // use App\Repositories\Auth\RoleRepository;
 
-use Matthewnw\Permissions\PermissionRegistrar;
+use Matthewnw\Permissions\PermissionsRegistrar;
 use Matthewnw\Permissions\Contracts\Role;
 
 /**
@@ -110,14 +110,14 @@ trait UserHasRoles
     }
 
     /**
-     * alias to get the role class from the service container via the PermissionRegistrar
+     * alias to get the role class from the service container via the PermissionsRegistrar
      *
      * @return \Matthewnw\Permissions\Contracts\Role
      */
     public function getRoleClass()
     {
         if (! isset($this->roleClass)) {
-            $this->roleClass = app(PermissionRegistrar::class)->getRoleClass();
+            $this->roleClass = app(PermissionsRegistrar::class)->getRoleClass();
         }
         return $this->roleClass;
     }
@@ -127,6 +127,6 @@ trait UserHasRoles
      */
     public function forgetCachedUserPermissions()
     {
-        app(PermissionRegistrar::class)->forgetCachedUserPermissions($this);
+        app(PermissionsRegistrar::class)->forgetCachedUserPermissions($this);
     }
 }

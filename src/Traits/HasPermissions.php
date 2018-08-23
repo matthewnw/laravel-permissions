@@ -3,8 +3,8 @@
 namespace Matthewnw\Permissions\Traits;
 
 use App\Repositories\Auth\PermissionRepository;
-use Matthewnw\Permissions\PermissionRegistrar;
-use Matthewnw\Permission\Contracts\Permission;
+use Matthewnw\Permissions\PermissionsRegistrar;
+use Matthewnw\Permissions\Contracts\Permission;
 
 /**
  * Trait UserHasPermissions.
@@ -60,14 +60,14 @@ trait HasPermissions
     }
 
     /**
-     * alias to get the permission class from the service container via the PermissionRegistrar
+     * alias to get the permission class from the service container via the PermissionsRegistrar
      *
      * @return \Matthewnw\Permissions\Contracts\Permission
      */
     public function getPermissionClass()
     {
         if (! isset($this->permissionClass)) {
-            $this->permissionClass = app(PermissionRegistrar::class)->getPermissionClass();
+            $this->permissionClass = app(PermissionsRegistrar::class)->getPermissionClass();
         }
         return $this->permissionClass;
     }
@@ -77,6 +77,6 @@ trait HasPermissions
      */
     public function forgetCachedPermissions()
     {
-        app(PermissionRegistrar::class)->forgetCachedPermissions();
+        app(PermissionsRegistrar::class)->forgetCachedPermissions();
     }
 }

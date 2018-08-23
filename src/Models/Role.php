@@ -66,7 +66,7 @@ class Role extends Model implements RoleContract
         return $this->belongsToMany(
             config('permissions.models.permission'),
             config('permissions.table_names.role_permissions'),
-            'permission_id', 'role_id');
+            'role_id', 'permission_id');
     }
 
     /**

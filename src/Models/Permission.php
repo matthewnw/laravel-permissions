@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Matthewnw\Permissions\Exceptions\PermissionDoesNotExist;
-use Matthewnw\Permissions\PermissionRegistrar;
+use Matthewnw\Permissions\PermissionsRegistrar;
 
 class Permission extends Model implements PermissionContract
 {
@@ -107,6 +107,6 @@ class Permission extends Model implements PermissionContract
      */
     protected static function getPermissions(): Collection
     {
-        return app(PermissionRegistrar::class)->getPermissions();
+        return app(PermissionsRegistrar::class)->getPermissions();
     }
 }

@@ -1,0 +1,11 @@
+.env
+.DS_Store
+error.log
+/node_modules
+/vendor
+/.idea
+/.vscode
+npm-debug.log
+yarn-error.log
+.env
+*.lock

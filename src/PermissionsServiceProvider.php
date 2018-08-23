@@ -15,7 +15,7 @@ class PermissionsServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot(PermissionRegistrar $permissionLoader)
+    public function boot(PermissionsRegistrar $permissionLoader)
     {
         // config
         $this->publishes([
