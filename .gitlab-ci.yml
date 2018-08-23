@@ -1,0 +1,45 @@
+stages:
+  - build
+  - test
+
+image: edbizarro/gitlab-ci-pipeline-php:7.1-alpine
+
+#### Build
+# We need to build development dependencies as they are needed to testing
+composer_dev:
+  stage: build
+  script:
+    - composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
+    - cp .env.example .env
+    - php artisan key:generate
+  artifacts:
+    expire_in: 1 week
+    # Define what to output from the job.
+    paths:
+      - vendor/
+      - .env
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}-composer_dev
+    paths:
+      - vendor/
+      - ~/.composer/cache/files
+
+#### Test
+phpunit:
+  stage: test
+  dependencies:
+    - composer_dev
+  script:
+    - ./vendor/phpunit/phpunit/phpunit -v --coverage-text --stderr
+  artifacts:
+    paths:
+      - ./storage/logs # for debugging
+    expire_in: 1 days
+    when: always
+
+codestyle:
+  stage: test
+  dependencies:
+    - composer_dev
+  script:
+    - ./vendor/bin/phpcs --colors

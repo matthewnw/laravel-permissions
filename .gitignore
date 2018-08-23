@@ -3,9 +3,11 @@
 error.log
 /node_modules
 /vendor
+/storage
 /.idea
 /.vscode
 npm-debug.log
 yarn-error.log
 .env
 *.lock
+*.log
