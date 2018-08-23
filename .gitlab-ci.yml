@@ -10,8 +10,6 @@ composer_dev:
   stage: build
   script:
     - composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
-    - cp .env.example .env
-    - php artisan key:generate
   artifacts:
     expire_in: 1 week
     # Define what to output from the job.
