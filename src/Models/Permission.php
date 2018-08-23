@@ -37,7 +37,9 @@ class Permission extends Model implements PermissionContract
         return $this->belongsToMany(
             config('permissions.models.role'),
             config('permissions.table_names.role_permissions'),
-            'permission_id', 'role_id');
+            'permission_id',
+            'role_id'
+        );
     }
 
     /**
@@ -48,7 +50,9 @@ class Permission extends Model implements PermissionContract
         return $this->belongsToMany(
             config('auth.providers.users.model'),
             config('permissions.table_names.user_permissions'),
-            'permission_id', 'user_id');
+            'permission_id',
+            'user_id'
+        );
     }
 
     /**

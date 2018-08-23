@@ -68,7 +68,9 @@ class Role extends Model implements RoleContract
         return $this->belongsToMany(
             config('permissions.models.permission'),
             config('permissions.table_names.role_permissions'),
-            'role_id', 'permission_id');
+            'role_id',
+            'permission_id'
+        );
     }
 
     /**
@@ -79,7 +81,9 @@ class Role extends Model implements RoleContract
         return $this->belongsToMany(
             config('auth.providers.users.model'),
             config('permissions.table_names.user_roles'),
-            'role_id', 'user_id');
+            'role_id',
+            'user_id'
+        );
     }
 
     /**

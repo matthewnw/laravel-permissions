@@ -31,8 +31,7 @@ class PermissionsServiceProvider extends ServiceProvider
 
         $this->registerBindings();
         // Check that the migrations have been run before loading the permissions
-        if (
-            Schema::hasTable(config('permissions.table_names.permissions')) &&
+        if (Schema::hasTable(config('permissions.table_names.permissions')) &&
             Schema::hasColumn(config('permissions.table_names.permissions'), 'identity')
         ) {
             // Load the permissions
@@ -62,8 +61,6 @@ class PermissionsServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(
-            __DIR__ . '/../config/permissions.php', 'permissions'
-        );
+        $this->mergeConfigFrom(__DIR__ . '/../config/permissions.php', 'permissions');
     }
 }

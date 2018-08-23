@@ -53,13 +53,13 @@ class PermissionsRegistrar
 
                 if ($userPermissions) {
                     // Check if using wildcard permissions
-                    if (config('permissions.use_wildcard_permissions')){
+                    if (config('permissions.use_wildcard_permissions')) {
                         $altPermissions = $this->getWildcardPermissions($identity);
                         // Check if the identity or variations are in the user permissions
                         return null !== $userPermissions->first(function (string $identity) use ($altPermissions) {
                             return in_array($identity, $altPermissions, true);
                         });
-                    }else{
+                    } else {
                         // Using strict permission identity checks only
                         return null !== $userPermissions->firstWhere('identity', $identity);
                     }
@@ -96,7 +96,7 @@ class PermissionsRegistrar
         return $this->cache->remember(
             $this->getUserCacheKey($user),
             config('permissions.cache_expiration_time'),
-            function () use($user) {
+            function () use ($user) {
                 // closure for checking based on user id
                 $userClosure = function ($query) use ($user) {
                     $query->where('users.id', '=', $user->id);
@@ -159,7 +159,7 @@ class PermissionsRegistrar
         $this->cache->forget($this->cacheKey);
 
         // Loop through all user accounts and forget their cached permissions
-        $this->getUserClass()::all()->each(function($user) {
+        $this->getUserClass()::all()->each(function ($user) {
             $this->forgetCachedUserPermissions($user);
         });
     }

@@ -22,7 +22,9 @@ trait UserHasRoles
         return $this->belongsToMany(
             config('permissions.models.role'),
             config('permissions.table_names.user_roles'),
-            'user_id', 'role_id');
+            'user_id',
+            'role_id'
+        );
     }
 
     /**
@@ -33,7 +35,9 @@ trait UserHasRoles
         return $this->belongsToMany(
             config('permissions.models.permission'),
             config('permissions.table_names.user_permissions'),
-            'user_id', 'permission_id');
+            'user_id',
+            'permission_id'
+        );
     }
 
     /**
