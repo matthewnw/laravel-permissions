@@ -4,3 +4,4 @@
 - [x] Create some tests for the package
 - [ ] Add a scope for user->role()
 - [ ] Add content to the README
+- [ ] Add method for roles to return boolean for ->hasPermission()

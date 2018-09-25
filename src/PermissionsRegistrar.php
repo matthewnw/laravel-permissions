@@ -61,7 +61,7 @@ class PermissionsRegistrar
                         });
                     } else {
                         // Using strict permission identity checks only
-                        return null !== $userPermissions->firstWhere('identity', $identity);
+                        return null !== $userPermissions->contains($identity);
                     }
                 }
 
