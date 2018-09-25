@@ -22,12 +22,14 @@ class PermissionsServiceProvider extends ServiceProvider
             __DIR__. '/../config/permissions.php' => config_path('permissions.php'),
         ], 'config');
 
-        // migrations
-        $this->publishes([
-            __DIR__.'/../database/migrations/' => database_path('migrations'),
-        ], 'migrations');
-        // Auto load the migrations if not published
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations/');
+        if (! class_exists('CreatePermissionTables')) {
+            // migrations
+            $this->publishes([
+                __DIR__.'/../database/migrations/' => database_path('migrations'),
+            ], 'migrations');
+            // Auto load the migrations if not published
+            $this->loadMigrationsFrom(__DIR__.'/../database/migrations/');
+        }
 
         $this->registerBindings();
         // Check that the migrations have been run before loading the permissions
