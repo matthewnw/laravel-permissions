@@ -22,7 +22,7 @@ class PermissionsServiceProvider extends ServiceProvider
             __DIR__. '/../config/permissions.php' => config_path('permissions.php'),
         ], 'config');
 
-        if (! class_exists('CreatePermissionTables')) {
+        if (! class_exists('CreatePermissionsTables')) {
             // migrations
             $this->publishes([
                 __DIR__.'/../database/migrations/' => database_path('migrations'),
