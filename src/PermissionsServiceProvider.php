@@ -32,12 +32,17 @@ class PermissionsServiceProvider extends ServiceProvider
         }
 
         $this->registerBindings();
+
         // Check that the migrations have been run before loading the permissions
-        if (Schema::hasTable(config('permissions.table_names.permissions')) &&
-            Schema::hasColumn(config('permissions.table_names.permissions'), 'identity')
-        ) {
-            // Load the permissions
-            $permissionLoader->registerPermissions();
+        try {
+            if (Schema::hasTable(config('permissions.table_names.permissions')) &&
+                Schema::hasColumn(config('permissions.table_names.permissions'), 'identity')
+            ) {
+                // Load the permissions
+                $permissionLoader->registerPermissions();
+            }
+        } catch (\Exception $e) {
+            // Could not connect to database
         }
     }
 
