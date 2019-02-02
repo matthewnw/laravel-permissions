@@ -22,8 +22,10 @@ class PermissionsServiceProvider extends ServiceProvider
             __DIR__. '/../config/permissions.php' => config_path('permissions.php'),
         ], 'config');
 
-        // Auto load the migrations if not published
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations/');
+        // Migrations
+        $this->publishes([
+            __DIR__.'/../database/migrations/' => database_path('migrations'),
+        ], 'migrations');
 
         $this->registerBindings();
 
