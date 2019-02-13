@@ -7,9 +7,23 @@ use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Schema;
 use Matthewnw\Permissions\Contracts\Permission as PermissionContract;
 use Matthewnw\Permissions\Contracts\Role as RoleContract;
+use Exception;
+use Matthewnw\Permissions\Exceptions\PermissionsLoaderException;
 
 class PermissionsServiceProvider extends ServiceProvider
 {
+    /**
+     * Register the application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->mergeConfigFrom(__DIR__ . '/../config/permissions.php', 'permissions');
+
+        $this->registerBindings();
+    }
+
     /**
      * Bootstrap the application services.
      *
@@ -27,19 +41,20 @@ class PermissionsServiceProvider extends ServiceProvider
             __DIR__.'/../database/migrations/' => database_path('migrations'),
         ], 'migrations');
 
-        $this->registerBindings();
-
-        // Check that the migrations have been run before loading the permissions
         try {
-            if (Schema::hasTable(config('permissions.table_names.permissions')) &&
-                Schema::hasColumn(config('permissions.table_names.permissions'), 'identity')
-            ) {
-                // Load the permissions
-                $permissionLoader->registerPermissions();
+            $permissionLoader->registerPermissions();
+        } catch (Exception $e) {
+            // Only show a warning if running in the console
+            if ($this->app->runningInConsole()) {
+                echo "Warning: Error loading permissions, have you added the migrations? - {$e->getMessage()}";
+            } else {
+                throw new PermissionsLoaderException($e->getMessage());
             }
-        } catch (\Exception $e) {
-            // Could not connect to database
         }
+
+        $this->app->singleton(PermissionRegistrar::class, function ($app) use ($permissionLoader) {
+            return $permissionLoader;
+        });
     }
 
     /**
@@ -55,15 +70,5 @@ class PermissionsServiceProvider extends ServiceProvider
 
         $this->app->bind(PermissionContract::class, $config['permission']);
         $this->app->bind(RoleContract::class, $config['role']);
-    }
-
-    /**
-     * Register the application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        $this->mergeConfigFrom(__DIR__ . '/../config/permissions.php', 'permissions');
     }
 }
