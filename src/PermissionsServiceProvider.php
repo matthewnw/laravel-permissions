@@ -45,9 +45,7 @@ class PermissionsServiceProvider extends ServiceProvider
             $permissionLoader->registerPermissions();
         } catch (Exception $e) {
             // Only show a warning if running in the console
-            if ($this->app->runningInConsole()) {
-                echo "Warning: Error loading permissions, have you added the migrations? - {$e->getMessage()}";
-            } else {
+            if (! $this->app->runningInConsole()) {
                 throw new PermissionsLoaderException($e->getMessage());
             }
         }
