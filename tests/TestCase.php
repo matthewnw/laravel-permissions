@@ -27,7 +27,7 @@ abstract class TestCase extends Orchestra
     /** @var \Matthewnw\Permissions\Models\Permission */
     protected $testAdminPermission;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
