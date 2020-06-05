@@ -60,7 +60,7 @@ return [
      * By default all permissions will be cached for 24 hours unless a permission or
      * role is updated. Then the cache will be flushed immediately.
      */
-    'cache_expiration_time' => 60 * 24,
+    'cache_expiration_time' => 60 * 60 * 24,
 
     /*
      * If using dot notation for you permissions, i.e. blog.post.update you can

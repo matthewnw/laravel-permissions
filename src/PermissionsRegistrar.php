@@ -79,7 +79,7 @@ class PermissionsRegistrar
     {
         $permissionClass = $this->getPermissionClass();
 
-        return $this->cache->remember($this->cacheKey, config('permission.cache_expiration_time'), function () use ($permissionClass) {
+        return $this->cache->remember($this->cacheKey, config('permissions.cache_expiration_time'), function () use ($permissionClass) {
             return $permissionClass->get();
         });
     }
@@ -178,7 +178,7 @@ class PermissionsRegistrar
     /**
      * Get an instance of the Permission class from the service container
      *
-     * @return void
+     * @return \Matthewnw\Permissions\Models\Permission
      */
     public function getPermissionClass()
     {
@@ -188,7 +188,7 @@ class PermissionsRegistrar
     /**
      * Get an instance of the Role class from the service container
      *
-     * @return void
+     * @return \Matthewnw\Permissions\Models\Role
      */
     public function getRoleClass()
     {
@@ -198,7 +198,7 @@ class PermissionsRegistrar
     /**
      * Get an instance of the User class from the service container
      *
-     * @return void
+     * @return \Illuminate\Foundation\Auth\User
      */
     public function getUserClass()
     {
