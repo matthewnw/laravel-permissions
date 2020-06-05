@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Matthewnw\Permissions\Contracts\Role as RoleContract;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 use Matthewnw\Permissions\Traits\HasPermissions;
 use Matthewnw\Permissions\Exceptions\RoleDoesNotExist;
 use Matthewnw\Permissions\Traits\RefreshesPermissionsCache;
@@ -38,7 +39,7 @@ class Role extends Model implements RoleContract
         // Set the default identity if none set based on the name
         self::creating(function ($model) {
             if (! $model->identity) {
-                $model->identity = str_slug($model->name);
+                $model->identity = Str::slug($model->name);
             }
         });
     }
@@ -145,6 +146,6 @@ class Role extends Model implements RoleContract
      */
     public function setIdentityAttribute($value)
     {
-        $this->attributes['identity'] = str_slug($value);
+        $this->attributes['identity'] = Str::slug($value);
     }
 }
